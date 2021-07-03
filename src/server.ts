@@ -22,11 +22,11 @@ import { PORT } from "./config";
 
 app
   .get(ROOT, getRoot)
-  .get(GET_SCRIPT, (req, res, next) => getFile(req, res, next, "scripts"))
-  .get(GET_SCREENSHOT, getFile)
-  .get(DOWNLOAD_SCRIPT, downloadScript)
-  .post(ADD_SCRIPT, addScript)
-  .post(ADD_SCREENSHOT, addScreenshot);
+  .get(GET_SCRIPT, (req, res, next) => getFile({ req, res, next }, "scripts"))
+  .get(GET_SCREENSHOT, (req, res, next) => getFile({ req, res, next }))
+  .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
+  .post(ADD_SCRIPT, (req, res) => addScript({ req, res }))
+  .post(ADD_SCREENSHOT, (req, res) => addScreenshot({ req, res }));
 
 function initApp() {
   const server = app.listen(PORT, function () {

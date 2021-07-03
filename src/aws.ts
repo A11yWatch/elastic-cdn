@@ -18,7 +18,7 @@ if (BUCKET_NAME) {
   });
 }
 
-export function getFile(Key?: string, res?: Response, download?: boolean) {
+export function getAWSFile(Key?: string, res?: Response, download?: boolean) {
   const params = { Bucket: BUCKET_NAME, Key };
   try {
     s3bucket.headObject(params, function (err) {

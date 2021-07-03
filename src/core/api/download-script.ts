@@ -5,13 +5,15 @@
  **/
 
 import { join } from "path";
-import { DEV, getFile } from "../../";
+import { DEV, getAWSFile } from "../../";
 
-export const downloadScript = (req, res) => {
+export const downloadScript = ({ req, res }) => {
   const url = `scripts/${req.params.domain}/${req.params.cdnPath}`;
   res.set("Content-Disposition", `attachment; filename=${req.params.cdnPath}`);
   try {
-    DEV ? res.download(join(`${__dirname}/../../${url}`)) : getFile(url, res);
+    DEV
+      ? res.download(join(`${__dirname}/../../${url}`))
+      : getAWSFile(url, res);
   } catch (e) {
     console.log(e, { type: "error" });
     res.send(false);

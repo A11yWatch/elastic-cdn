@@ -30,7 +30,7 @@ const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
   }
 };
 
-export const addScreenshot = (req, res) => {
+export const addScreenshot = ({ req, res }) => {
   const { cdnSourceStripped, domain, screenshot, screenshotStill } = req.body;
   const srcPath = `src/screenshots/${domain}/${cdnSourceStripped}`;
   const cdnFileName = srcPath + ".png";

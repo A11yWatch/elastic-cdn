@@ -5,9 +5,9 @@
  **/
 
 import { join } from "path";
-import { DEV, getFile as getAwsFile } from "../../";
+import { DEV, getAWSFile } from "../../";
 
-const getFile = (req, res, next, pth?: string): void => {
+const getFile = ({ req, res, next }, pth?: string): void => {
   const url = `${pth || "screenshots"}/${req.params.domain}/${
     req.params.cdnPath
   }`;
@@ -15,7 +15,7 @@ const getFile = (req, res, next, pth?: string): void => {
   try {
     DEV
       ? res.sendFile(join(`${__dirname}/../../${url}`))
-      : getAwsFile(url, res);
+      : getAWSFile(url, res);
   } catch (e) {
     console.log(e);
     res.send(false);
