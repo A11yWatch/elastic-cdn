@@ -5,7 +5,6 @@
  **/
 
 import { join } from "path";
-import { log } from "@a11ywatch/log";
 import { DEV, getFile } from "../../";
 
 export const downloadScript = (req, res) => {
@@ -14,7 +13,7 @@ export const downloadScript = (req, res) => {
   try {
     DEV ? res.download(join(`${__dirname}/../../${url}`)) : getFile(url, res);
   } catch (e) {
-    log(e, { type: "error" });
+    console.log(e, { type: "error" });
     res.send(false);
   }
 };

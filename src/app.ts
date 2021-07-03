@@ -7,10 +7,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { PORT, corsOptionsDelegate } from "./config";
-import { log, setConfig as setLogConfig } from "@a11ywatch/log";
-
-setLogConfig({ container: "cdn-server" });
+import { corsOptionsDelegate } from "./config";
 
 const app = express();
 
@@ -18,16 +15,4 @@ app.use(cors(corsOptionsDelegate));
 app.use(bodyParser.json({ limit: "500mb" }));
 app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
 
-function initApp() {
-  const server = app.listen(PORT, function () {
-    try {
-      log(`server listening on port ${this.address().port}!`);
-    } catch (e) {
-      log(e, { type: "error" });
-    }
-  });
-
-  return server;
-}
-
-export { app, initApp };
+export { app };

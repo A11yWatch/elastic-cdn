@@ -4,7 +4,7 @@
  * LICENSE file in the root directory of this source tree.
  **/
 
-import { app, initApp } from "./app";
+import { app } from "./app";
 import {
   addScript,
   addScreenshot,
@@ -18,6 +18,7 @@ import {
   GET_SCRIPT,
   GET_SCREENSHOT,
 } from "./core/api";
+import { PORT } from "./config";
 
 app
   .get(ROOT, getRoot)
@@ -26,6 +27,18 @@ app
   .get(DOWNLOAD_SCRIPT, downloadScript)
   .post(ADD_SCRIPT, addScript)
   .post(ADD_SCREENSHOT, addScreenshot);
+
+function initApp() {
+  const server = app.listen(PORT, function () {
+    try {
+      console.log(`server listening on port ${this.address().port}!`);
+    } catch (e) {
+      console.log(e, { type: "error" });
+    }
+  });
+
+  return server;
+}
 
 const server = initApp();
 
@@ -37,4 +50,4 @@ export const killServer = () => {
   });
 };
 
-export { app as cdnServer };
+export { initApp, app as cdnServer };

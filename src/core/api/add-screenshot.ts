@@ -5,7 +5,6 @@
  **/
 
 import { readFileSync, createWriteStream } from "fs";
-import { log } from "@a11ywatch/log";
 import { directoryExist, uploadToS3, AWS_S3_ENABLED } from "../../";
 
 const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
@@ -15,7 +14,7 @@ const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
       screenshotStream.write(Buffer.from(screenshot));
 
       screenshotStream.on("finish", () => {
-        log(`WROTE: ${cdnFileName}`);
+        console.log(`WROTE: ${cdnFileName}`);
         if (AWS_S3_ENABLED) {
           uploadToS3(
             readFileSync(cdnFileName),
@@ -27,7 +26,7 @@ const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
       screenshotStream.end();
     }
   } catch (e) {
-    log(e);
+    console.log(e);
   }
 };
 
@@ -50,7 +49,7 @@ export const addScreenshot = (req, res) => {
 
     res.send(true);
   } catch (e) {
-    log(e);
+    console.log(e);
     res.send(false);
   }
 };

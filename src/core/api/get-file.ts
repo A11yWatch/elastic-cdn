@@ -5,7 +5,6 @@
  **/
 
 import { join } from "path";
-import { log } from "@a11ywatch/log";
 import { DEV, getFile as getAwsFile } from "../../";
 
 const getFile = (req, res, next, pth?: string): void => {
@@ -18,7 +17,7 @@ const getFile = (req, res, next, pth?: string): void => {
       ? res.sendFile(join(`${__dirname}/../../${url}`))
       : getAwsFile(url, res);
   } catch (e) {
-    log(e);
+    console.log(e);
     res.send(false);
   }
 };
