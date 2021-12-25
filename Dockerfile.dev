@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:14
+FROM node:14.7.0-alpine AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -6,11 +6,11 @@ COPY package*.json ./
 
 RUN npm ci
 
-FROM mhart/alpine-node:slim-14
+FROM node:14.7.0-slim
 
 WORKDIR /usr/src/app
 
-COPY --from=0 /app .
+COPY --from=BUILD_IMAGE /app .
 COPY . .
 
 CMD ["node_modules/ts-node-dev/lib/bin.js", "--transpile-only", "src/server.ts"]
