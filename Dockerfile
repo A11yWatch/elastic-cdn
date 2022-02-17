@@ -10,7 +10,7 @@ COPY . .
 
 RUN  npm run build
 
-FROM node:14.7.0-slim
+FROM node:14.19.0-slim
 
 WORKDIR /usr/src/app
 
