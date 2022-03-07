@@ -6,4 +6,3 @@ export {
   MAIN_API_URL,
   ANGELICA_API_URL,
 } from "./config";
-export { corsOptionsDelegate } from "./cors";
