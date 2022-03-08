@@ -5,17 +5,20 @@
  **/
 
 import { join } from "path";
-import { DEV, getAWSFile } from "../../";
+import { AWS_S3_ENABLED } from "../../config";
+import { getAWSFile } from "./aws";
 
-const getFile = ({ req, res, next }, pth?: string): void => {
+const getFile = ({ req, res }, pth?: string): void => {
   const url = `${pth || "screenshots"}/${req.params.domain}/${
     req.params.cdnPath
   }`;
 
   try {
-    DEV
-      ? res.sendFile(join(`${__dirname}/../../${url}`))
-      : getAWSFile(url, res);
+    if (!AWS_S3_ENABLED) {
+      res.sendFile(join(`${__dirname}/../../${url}`));
+    } else {
+      getAWSFile(url, res);
+    }
   } catch (e) {
     console.log(e);
     res.send(false);

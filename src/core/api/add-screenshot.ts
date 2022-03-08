@@ -5,7 +5,9 @@
  **/
 
 import { readFileSync, createWriteStream } from "fs";
-import { directoryExist, uploadToS3, AWS_S3_ENABLED } from "../../";
+import { AWS_S3_ENABLED } from "../../config";
+import { directoryExist } from "../../utils";
+import { uploadToS3 } from "./aws";
 
 const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
   try {

@@ -22,8 +22,8 @@ import { PORT } from "./config";
 
 app
   .get(ROOT, getRoot)
-  .get(GET_SCRIPT, (req, res, next) => getFile({ req, res, next }, "scripts"))
-  .get(GET_SCREENSHOT, (req, res, next) => getFile({ req, res, next }))
+  .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
+  .get(GET_SCREENSHOT, (req, res) => getFile({ req, res }))
   .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
   .post(ADD_SCRIPT, (req, res) => addScript({ req, res }))
   .post(ADD_SCREENSHOT, (req, res) => addScreenshot({ req, res }));

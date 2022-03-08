@@ -6,7 +6,9 @@
 
 import { createReadStream, createWriteStream } from "fs";
 import { minify } from "uglify-js";
-import { directoryExist, uploadToS3, AWS_S3_ENABLED } from "../../";
+import { AWS_S3_ENABLED } from "../../config";
+import { directoryExist } from "../../utils";
+import { uploadToS3 } from "./aws";
 
 export const addScript = ({ req, res }) => {
   try {
