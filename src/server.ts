@@ -4,7 +4,10 @@
  * LICENSE file in the root directory of this source tree.
  **/
 
-import { app } from "./app";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+
 import {
   addScript,
   addScreenshot,
@@ -21,7 +24,13 @@ import {
 import { PORT } from "./config";
 
 function initApp() {
+  const app = express();
+
   app
+    .use(cors())
+    .set("trust proxy", true)
+    .use(bodyParser.json({ limit: "500mb" }))
+    .use(bodyParser.urlencoded({ limit: "500mb", extended: true }))
     .get(ROOT, getRoot)
     // rename cdn path
     .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
@@ -51,4 +60,4 @@ export const killServer = () => {
   });
 };
 
-export { initApp, app as cdnServer };
+export { initApp, server as cdnServer };
