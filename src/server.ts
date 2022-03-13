@@ -20,15 +20,16 @@ import {
 } from "./core/api";
 import { PORT } from "./config";
 
-app
-  .get(ROOT, getRoot)
-  .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
-  .get(GET_SCREENSHOT, (req, res) => getFile({ req, res }))
-  .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
-  .post(ADD_SCRIPT, (req, res) => addScript({ req, res }))
-  .post(ADD_SCREENSHOT, (req, res) => addScreenshot({ req, res }));
-
 function initApp() {
+  app
+    .get(ROOT, getRoot)
+    // rename cdn path
+    .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
+    .get(GET_SCREENSHOT, (req, res) => getFile({ req, res }))
+    .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
+    .post(ADD_SCRIPT, (req, res) => addScript({ req, res }))
+    .post(ADD_SCREENSHOT, (req, res) => addScreenshot({ req, res }));
+
   const server = app.listen(PORT, function () {
     try {
       console.log(`server listening on port ${this.address().port}!`);

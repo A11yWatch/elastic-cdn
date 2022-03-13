@@ -11,6 +11,7 @@ import cors from "cors";
 const app = express();
 
 app.use(cors());
+app.set("trust proxy", true);
 app.use(bodyParser.json({ limit: "500mb" }));
 app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
 
