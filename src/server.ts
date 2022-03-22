@@ -27,8 +27,8 @@ function initApp() {
   const app = express();
 
   app
-    .use(cors())
     .set("trust proxy", true)
+    .use(cors())
     .use(bodyParser.json({ limit: "500mb" }))
     .use(bodyParser.urlencoded({ limit: "500mb", extended: true }))
     .get(ROOT, getRoot)

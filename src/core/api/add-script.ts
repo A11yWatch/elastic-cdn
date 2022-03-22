@@ -1,68 +1,59 @@
-/*
- * Copyright (c) A11yWatch, LLC. and its affiliates.
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- **/
-
 import { createReadStream, createWriteStream } from "fs";
 import { minify } from "uglify-js";
-import { AWS_S3_ENABLED } from "../../config";
 import { directoryExist } from "../../utils";
 import { uploadToS3 } from "./aws";
 
 export const addScript = ({ req, res }) => {
-  try {
-    const { scriptBuffer, cdnSourceStripped, domain } = req.body;
+  setImmediate(() => {
+    try {
+      const { scriptBuffer, cdnSourceStripped, domain } = req.body;
 
-    if (cdnSourceStripped && scriptBuffer) {
-      const srcPath = `src/scripts/${domain}/${cdnSourceStripped}`;
-      const awsPath = srcPath.substring(4);
-      const cdnFileName = `${srcPath}.js`;
-      const cdnFileNameMin = `${srcPath}.min.js`;
-      const dirExist = directoryExist(cdnFileName);
+      if (cdnSourceStripped && scriptBuffer) {
+        const srcPath = `src/scripts/${domain}/${cdnSourceStripped}`;
+        const awsPath = srcPath.substring(4);
+        const cdnFileName = `${srcPath}.js`;
+        const cdnFileNameMin = `${srcPath}.min.js`;
+        const dirExist = directoryExist(cdnFileName);
 
-      if (dirExist) {
-        const writeStream = createWriteStream(cdnFileName);
-        const writeStreamMinified = createWriteStream(cdnFileNameMin);
-        const newScriptBuffer = Buffer.from(scriptBuffer);
-        const minifiedCode = minify(scriptBuffer)?.code;
-        const minBuffer = Buffer.from(minifiedCode);
+        if (dirExist) {
+          const writeStream = createWriteStream(cdnFileName);
+          const writeStreamMinified = createWriteStream(cdnFileNameMin);
 
-        writeStream.write(newScriptBuffer, "base64");
-        writeStreamMinified.write(minBuffer, "base64");
+          const newScriptBuffer = Buffer.from(scriptBuffer);
 
-        writeStream.on("finish", () => {
-          console.log(`COMPLETED WRITE: CDN FILE: ${cdnFileName}`);
-          if (AWS_S3_ENABLED) {
+          const minifiedCode = minify(scriptBuffer, { mangle: false })?.code;
+          const minBuffer = Buffer.from(minifiedCode);
+
+          writeStream.write(newScriptBuffer, "base64");
+          writeStreamMinified.write(minBuffer, "base64");
+
+          // when file stored send to AWS -> then delete file TODO: MOVE TO BUFFER HANDLING
+          writeStream.on("finish", () => {
             uploadToS3(
               createReadStream(cdnFileName),
               `${awsPath}.js`,
               cdnFileName,
               "text/javascript"
             );
-          }
-        });
+          });
 
-        writeStreamMinified.on("finish", () => {
-          console.log(`COMPLETED WRITE: Minified CDN FILE: ${cdnFileNameMin}`);
-          if (AWS_S3_ENABLED) {
+          writeStreamMinified.on("finish", () => {
             uploadToS3(
               createReadStream(cdnFileNameMin),
               `${awsPath}.min.js`,
               cdnFileNameMin,
               "text/javascript"
             );
-          }
-        });
+          });
 
-        writeStream.end();
-        writeStreamMinified.end();
+          writeStream.end();
+          writeStreamMinified.end();
+        }
       }
+    } catch (e) {
+      console.log(e);
     }
+  });
 
-    res.send(true);
-  } catch (e) {
-    console.log(e);
-    res.send(false);
-  }
+  res.send(true);
 };

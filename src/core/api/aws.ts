@@ -7,7 +7,7 @@
 import { S3 } from "aws-sdk";
 import fs from "fs";
 import { Response } from "express";
-import { DEV, BUCKET_NAME } from "../../config";
+import { DEV, BUCKET_NAME, AWS_S3_ENABLED } from "../../config";
 
 let s3bucket: S3;
 
@@ -41,11 +41,15 @@ export function getAWSFile(Key?: string, res?: Response, download?: boolean) {
 }
 
 export function uploadToS3(
-  Body: any,
+  Body: any, // file stream
   Key: string,
   fsPath: string,
   ContentType?: string
 ): void {
+  if (!AWS_S3_ENABLED) {
+    return;
+  }
+
   try {
     if (s3bucket) {
       s3bucket.upload(
@@ -63,6 +67,7 @@ export function uploadToS3(
             console.error("ERROR: ", err);
           } else {
             console.log("UPLOADED: ", data);
+            // TODO: REMOVE FS STORING NON DEV
             if (!DEV) {
               fs.unlinkSync(fsPath);
             }
