@@ -1,7 +1,7 @@
 import { S3 } from "aws-sdk";
 import fs from "fs";
 import { Response } from "express";
-import { DEV, BUCKET_NAME, AWS_S3_ENABLED } from "../../config";
+import { BUCKET_NAME, AWS_S3_ENABLED } from "../../config";
 
 let s3bucket: S3;
 
@@ -25,6 +25,7 @@ export function getAWSFile(Key?: string, res?: Response, download?: boolean) {
           if (download) {
             res.attachment(Key);
           }
+
           stream.pipe(res);
         }
       });
@@ -61,10 +62,7 @@ export function uploadToS3(
             console.error("ERROR: ", err);
           } else {
             console.log("UPLOADED: ", data);
-            // TODO: REMOVE FS STORING NON DEV
-            if (!DEV) {
-              fs.unlinkSync(fsPath);
-            }
+            fs.unlinkSync(fsPath);
           }
         }
       );

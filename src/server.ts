@@ -7,7 +7,6 @@ import {
   downloadScript,
   DOWNLOAD_SCRIPT,
   GET_SCRIPT,
-  GET_SCREENSHOT,
 } from "./core/api";
 import { PORT } from "./config";
 import { startGRPC } from "./proto/init";
@@ -20,7 +19,6 @@ function initApp() {
     .use(bodyParser.urlencoded({ limit: "500mb", extended: true }))
     // rename cdn path
     .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
-    .get(GET_SCREENSHOT, (req, res) => getFile({ req, res }))
     .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
     .get("/_internal_/health/", (_req, res) => {
       res.json({ status: "healthy" });
@@ -31,7 +29,7 @@ function initApp() {
       console.log(`server listening on port ${this.address().port}!`);
       await startGRPC();
     } catch (e) {
-      console.log(e, { type: "error" });
+      console.error(e);
     }
   });
 
