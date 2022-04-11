@@ -6,11 +6,13 @@
   "author": "Jeffrey Mendez",
   "scripts": {
     "test": "jest",
-    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
+    "build": "tsc && tsc-alias && cp -R src/proto/*.proto dist/proto/",
     "dev": "ts-node-dev --transpile-only src/server.ts",
     "start": "NODE_ENV=production node dist/server.js"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.6.2",
+    "@grpc/proto-loader": "^0.6.9",
     "@swc/core": "^1.2.160",
     "aws-sdk": "^2.666.0",
     "body-parser": "^1.19.0",
@@ -22,6 +24,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@swc/core": "^1.2.117",
+    "@swc/jest": "^0.2.20",
     "@types/aws-sdk": "^2.7.0",
     "@types/cors": "^2.8.7",
     "@types/express": "^4.17.8",
@@ -29,14 +33,20 @@
     "jest": "^26.4.2",
     "prettier": "^2.0.5",
     "supertest": "^5.0.0",
-    "ts-jest": "^26.4.0",
     "ts-node-dev": "^1.1.6",
+    "tsc-alias": "^1.6.6",
     "tsconfig-paths": "^3.9.0",
     "tscpaths": "0.0.9",
     "typescript": "^3.8.3"
   },
   "jest": {
-    "preset": "ts-jest",
+    "moduleNameMapper": {
+      "^@app/(.*)$": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.(t|j)sx?$": "@swc/jest"
+    },
+    "verbose": true,
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
   },

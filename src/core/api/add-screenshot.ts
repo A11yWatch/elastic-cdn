@@ -23,25 +23,29 @@ const createSS = ({ srcPath, cdnFileName, screenshot }: any): any => {
   }
 };
 
+export const addScreenshotSource = async (params) => {
+  const { cdnSourceStripped, domain, screenshot, screenshotStill } = params;
+  try {
+    const srcPath = `src/screenshots/${domain}/${cdnSourceStripped}`;
+    const cdnFileName = srcPath + ".png";
+    createSS({
+      cdnFileName,
+      screenshot,
+      srcPath,
+    });
+    createSS({
+      cdnFileName: cdnFileName.replace(".png", "-still.png"),
+      screenshot: screenshotStill,
+      srcPath: `${srcPath}-still`,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const addScreenshot = ({ req, res }) => {
-  setImmediate(() => {
-    const { cdnSourceStripped, domain, screenshot, screenshotStill } = req.body;
-    try {
-      const srcPath = `src/screenshots/${domain}/${cdnSourceStripped}`;
-      const cdnFileName = srcPath + ".png";
-      createSS({
-        cdnFileName,
-        screenshot,
-        srcPath,
-      });
-      createSS({
-        cdnFileName: cdnFileName.replace(".png", "-still.png"),
-        screenshot: screenshotStill,
-        srcPath: `${srcPath}-still`,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+  setImmediate(async () => {
+    await addScreenshotSource(req.body);
   });
 
   res.send(true);

@@ -3,39 +3,33 @@ import bodyParser from "body-parser";
 import cors from "cors";
 
 import {
-  addScript,
-  addScreenshot,
-  getRoot,
   getFile,
   downloadScript,
-  ROOT,
-  ADD_SCRIPT,
-  ADD_SCREENSHOT,
   DOWNLOAD_SCRIPT,
   GET_SCRIPT,
   GET_SCREENSHOT,
 } from "./core/api";
 import { PORT } from "./config";
+import { startGRPC } from "./proto/init";
 
 function initApp() {
   const app = express();
 
   app
-    .set("trust proxy", true)
     .use(cors())
-    .use(bodyParser.json({ limit: "500mb" }))
     .use(bodyParser.urlencoded({ limit: "500mb", extended: true }))
-    .get(ROOT, getRoot)
     // rename cdn path
     .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
     .get(GET_SCREENSHOT, (req, res) => getFile({ req, res }))
     .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))
-    .post(ADD_SCRIPT, (req, res) => addScript({ req, res }))
-    .post(ADD_SCREENSHOT, (req, res) => addScreenshot({ req, res }));
+    .get("/_internal_/health/", (_req, res) => {
+      res.json({ status: "healthy" });
+    });
 
-  const server = app.listen(PORT, function () {
+  const server = app.listen(PORT, async function () {
     try {
       console.log(`server listening on port ${this.address().port}!`);
+      await startGRPC();
     } catch (e) {
       console.log(e, { type: "error" });
     }
@@ -54,4 +48,4 @@ export const killServer = () => {
   });
 };
 
-export { initApp, server as cdnServer };
+export { initApp, server };

@@ -22,6 +22,5 @@ RUN npm install --production
 
 # copy from build image
 COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
-COPY --from=BUILD_IMAGE /usr/src/app/.env ./.env
 
 CMD [ "node", "./dist/server.js"]
