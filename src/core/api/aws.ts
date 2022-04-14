@@ -1,5 +1,4 @@
 import { S3 } from "aws-sdk";
-import fs from "fs";
 import { Response } from "express";
 import { BUCKET_NAME, AWS_S3_ENABLED } from "../../config";
 
@@ -38,35 +37,35 @@ export function getAWSFile(Key?: string, res?: Response, download?: boolean) {
 export function uploadToS3(
   Body: any, // file stream
   Key: string,
-  fsPath: string,
   ContentType?: string
-): void {
+) {
   if (!AWS_S3_ENABLED) {
     return;
   }
 
   try {
-    if (s3bucket) {
-      s3bucket.upload(
-        {
-          Bucket: BUCKET_NAME,
-          Key,
-          Body,
-          ACL: "public-read",
-          ContentType,
-          ContentDisposition:
-            ContentType === "text/javascript" ? "inline" : undefined,
-        },
-        (err, data) => {
-          if (err) {
-            console.error("ERROR: ", err);
-          } else {
-            console.log("UPLOADED: ", data);
-            fs.unlinkSync(fsPath);
+    return new Promise((resolve, reject) => {
+      if (s3bucket) {
+        s3bucket.upload(
+          {
+            Bucket: BUCKET_NAME,
+            Key,
+            Body,
+            ACL: "public-read",
+            ContentType,
+            ContentDisposition:
+              ContentType === "text/javascript" ? "inline" : undefined,
+          },
+          (err, data) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
           }
-        }
-      );
-    }
+        );
+      }
+    });
   } catch (e) {
     console.error(e);
   }

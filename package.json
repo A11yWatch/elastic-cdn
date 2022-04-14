@@ -24,7 +24,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@swc/core": "^1.2.117",
     "@swc/jest": "^0.2.20",
     "@types/aws-sdk": "^2.7.0",
     "@types/cors": "^2.8.7",

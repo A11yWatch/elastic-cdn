@@ -1,55 +1,61 @@
-import { createReadStream, createWriteStream } from "fs";
+import { createWriteStream } from "fs";
 import { minify } from "@swc/core";
 import { directoryExist } from "../../utils";
 import { uploadToS3 } from "./aws";
+import { AWS_S3_ENABLED } from "../../config/config";
 
-export const addScriptSource = async (params) => {
+const storeScriptLocal = async (params) => {
+  const { scriptBuffer, cdnSourceStripped, domain } = params;
+
+  if (cdnSourceStripped && scriptBuffer) {
+    const srcPath = `src/scripts/${domain}/${cdnSourceStripped}`;
+    const cdnFileName = `${srcPath}.js`;
+    const cdnFileNameMin = `${srcPath}.min.js`;
+    const dirExist = directoryExist(cdnFileName);
+
+    if (dirExist) {
+      const writeStream = createWriteStream(cdnFileName);
+      const writeStreamMinified = createWriteStream(cdnFileNameMin);
+      const newScriptBuffer = Buffer.from(scriptBuffer);
+      // MOVE MINIFY TO QUEUE
+      const output = await minify(scriptBuffer, { mangle: false });
+
+      const { code } = output;
+
+      const minBuffer = Buffer.from(code);
+
+      writeStream.write(newScriptBuffer, "base64");
+      writeStreamMinified.write(minBuffer, "base64");
+
+      writeStream.end();
+      writeStreamMinified.end();
+    }
+  }
+};
+
+const storeScriptAws = async (params) => {
+  const { scriptBuffer, cdnSourceStripped, domain } = params;
+
+  if (cdnSourceStripped && scriptBuffer) {
+    const awsPath = `scripts/${domain}/${cdnSourceStripped}`;
+
+    const newScriptBuffer = Buffer.from(scriptBuffer);
+    // MOVE MINIFY TO QUEUE
+    const output = await minify(scriptBuffer, { mangle: false });
+    const { code } = output;
+    const minBuffer = Buffer.from(code);
+
+    await uploadToS3(newScriptBuffer, `${awsPath}.js`, "text/javascript");
+    await uploadToS3(minBuffer, `${awsPath}.min.js`, "text/javascript");
+  }
+};
+
+export const addScriptSource = async (body) => {
   try {
-    const { scriptBuffer, cdnSourceStripped, domain } = params;
-
-    if (cdnSourceStripped && scriptBuffer) {
-      const srcPath = `src/scripts/${domain}/${cdnSourceStripped}`;
-      const awsPath = srcPath.substring(4);
-      const cdnFileName = `${srcPath}.js`;
-      const cdnFileNameMin = `${srcPath}.min.js`;
-      const dirExist = directoryExist(cdnFileName);
-
-      if (dirExist) {
-        const writeStream = createWriteStream(cdnFileName);
-        const writeStreamMinified = createWriteStream(cdnFileNameMin);
-
-        const newScriptBuffer = Buffer.from(scriptBuffer);
-
-        // MOVE MINIFY TO QUEUE
-        const output = await minify(scriptBuffer, { mangle: false });
-        const { code } = output;
-        const minBuffer = Buffer.from(code);
-        // TODO: LOOK INTO ALTERNATIVE
-        writeStream.write(newScriptBuffer, "base64");
-        writeStreamMinified.write(minBuffer, "base64");
-
-        // when file stored send to AWS -> then delete file TODO: MOVE TO BUFFER HANDLING
-        writeStream.on("finish", () => {
-          uploadToS3(
-            createReadStream(cdnFileName),
-            `${awsPath}.js`,
-            cdnFileName,
-            "text/javascript"
-          );
-        });
-
-        writeStreamMinified.on("finish", () => {
-          uploadToS3(
-            createReadStream(cdnFileNameMin),
-            `${awsPath}.min.js`,
-            cdnFileNameMin,
-            "text/javascript"
-          );
-        });
-
-        writeStream.end();
-        writeStreamMinified.end();
-      }
+    if (!AWS_S3_ENABLED) {
+      await storeScriptLocal(body);
+    } else {
+      await storeScriptAws(body);
     }
   } catch (e) {
     console.log(e);
@@ -58,12 +64,7 @@ export const addScriptSource = async (params) => {
 
 export const addScript = ({ req, res }) => {
   setImmediate(async () => {
-    try {
-      await addScriptSource(req.body);
-    } catch (e) {
-      console.log(e);
-    }
+    await addScriptSource(req.body);
   });
-
   res.send(true);
 };
