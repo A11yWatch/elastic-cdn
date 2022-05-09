@@ -4,6 +4,3 @@ export const PORT: number =
 // AWS
 export const BUCKET_NAME: string = process.env.BUCKET_NAME;
 export const AWS_S3_ENABLED: boolean = !DEV && !!BUCKET_NAME;
-// INTERNAL SERVICE URLS
-export const MAIN_API_URL: string = process.env.MAIN_API_URL;
-export const ANGELICA_API_URL: string = process.env.ANGELICA_API_URL;
