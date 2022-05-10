@@ -16,7 +16,7 @@ function initApp() {
 
   app
     .use(cors())
-    .use(bodyParser.urlencoded({ limit: "500mb", extended: true }))
+    .use(bodyParser.urlencoded({ limit: "200mb", extended: true }))
     // rename cdn path
     .get(GET_SCRIPT, (req, res) => getFile({ req, res }, "scripts"))
     .get(DOWNLOAD_SCRIPT, (req, res) => downloadScript({ req, res }))

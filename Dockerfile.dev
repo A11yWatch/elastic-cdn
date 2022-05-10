@@ -1,4 +1,4 @@
-FROM node:14.7.0-alpine AS BUILD_IMAGE
+FROM node:17.8-alpine3.14 AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm ci
 
-FROM node:14.19.0-slim
+FROM node:17.8-alpine3.14
 
 WORKDIR /usr/src/app
 

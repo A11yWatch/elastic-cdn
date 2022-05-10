@@ -1,26 +1,39 @@
-FROM node:14.7.0-alpine AS BUILD_IMAGE
+FROM --platform=$BUILDPLATFORM node:17.8-alpine3.14 AS builder
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN apk upgrade --update-cache --available && \
+	apk add openssl python3 make g++ && \
+	rm -rf /var/cache/apk/*
+
+RUN npm ci
 
 COPY . .
 
-RUN  npm run build
+RUN npm run build
 
-FROM node:14.19.0-slim
+FROM node:17.8-alpine3.14 AS installer
 
 WORKDIR /usr/src/app
 
+RUN apk upgrade --update-cache --available && \
+	apk add openssl python3 make g++ && \
+	rm -rf /var/cache/apk/*
+
 COPY package*.json ./
-
-ENV NODE_ENV production
-
 RUN npm install --production
 
-# copy from build image
-COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
+FROM node:17.8-alpine3.14
 
-CMD [ "node", "./dist/server.js"]
+WORKDIR /usr/src/app
+
+RUN apk upgrade --update-cache --available && \
+	apk add openssl curl && \
+	rm -rf /var/cache/apk/*
+
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=installer /usr/src/app/node_modules ./node_modules
+
+CMD [ "node", "./dist/server.js" ]

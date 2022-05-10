@@ -25,21 +25,8 @@ const listWebsites = () => {
   });
 };
 
-const gather = (website = {}) => {
-  return new Promise((resolve, reject) => {
-    client.gather(website, (error, res) => {
-      if (!error) {
-        resolve(res);
-      } else {
-        reject(error);
-      }
-    });
-  });
-};
-
 const controller = {
   listWebsites,
-  gather,
 };
 
 export { client, createClient, controller };
