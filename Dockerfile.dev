@@ -1,3 +1,19 @@
+FROM --platform=$BUILDPLATFORM rustlang/rust:nightly AS rustbuilder
+
+WORKDIR /app
+
+ENV GRPC_HOST=0.0.0.0:50053
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    gcc cmake libc6 npm
+
+RUN npm install @a11ywatch/protos
+
+COPY . .
+
+RUN cargo install --no-default-features --path .
+
 FROM node:17.8-alpine3.14 AS BUILD_IMAGE
 
 WORKDIR /app
@@ -11,6 +27,7 @@ FROM node:17.8-alpine3.14
 WORKDIR /usr/src/app
 
 COPY --from=BUILD_IMAGE /app .
+COPY --from=rustbuilder /usr/local/cargo/bin/health_client /usr/local/bin/health_client
 COPY . .
 
 CMD ["node_modules/ts-node-dev/lib/bin.js", "--transpile-only", "src/server.ts"]

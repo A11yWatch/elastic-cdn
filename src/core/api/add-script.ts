@@ -61,10 +61,3 @@ export const addScriptSource = async (body) => {
     console.log(e);
   }
 };
-
-export const addScript = ({ req, res }) => {
-  setImmediate(async () => {
-    await addScriptSource(req.body);
-  });
-  res.send(true);
-};

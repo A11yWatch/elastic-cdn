@@ -1,1 +1,1 @@
-export { BUCKET_NAME, DEV, AWS_S3_ENABLED, PORT } from "./config";
+export { BUCKET_NAME, DEV, AWS_S3_ENABLED } from "./config";

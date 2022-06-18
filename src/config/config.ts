@@ -1,6 +1,4 @@
 export const DEV: boolean = process.env.NODE_ENV === "development";
-export const PORT: number =
-  process.env.NODE_ENV === "test" ? 0 : parseInt(process.env.PORT, 10) || 8090;
 // AWS
 export const BUCKET_NAME: string = process.env.BUCKET_NAME;
 export const AWS_S3_ENABLED: boolean = !DEV && !!BUCKET_NAME;
