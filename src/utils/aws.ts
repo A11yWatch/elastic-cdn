@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk";
-import { BUCKET_NAME, AWS_S3_ENABLED } from "../../config";
+import { BUCKET_NAME, AWS_S3_ENABLED } from "../config/config";
 
 let s3bucket: S3;
 

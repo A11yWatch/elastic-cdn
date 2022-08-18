@@ -1,9 +1,9 @@
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { getProto } from "./website";
 import { GRPC_PORT, GRPC_HOST } from "../config/rpc";
-import { addScriptSource } from "../core/api";
+import { getProto } from "./website";
+import { addScriptSource } from "../core/api/add-script";
 
-let server: Server;
+let server: Server; // gRPC server
 
 export const createServer = async () => {
   const websiteProto = await getProto();

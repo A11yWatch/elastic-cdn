@@ -1,3 +1,5 @@
-import { startGRPC } from "./proto/init";
+import { createServer } from "./proto/website-server";
 
-startGRPC();
+createServer().catch((e) => {
+  console.error(e);
+});

@@ -1,7 +1,9 @@
 import { createWriteStream } from "fs";
 import { minify } from "@swc/core";
-import { directoryExist } from "../../utils";
-import { uploadToS3 } from "./aws";
+
+import { directoryExist } from "../../utils/directory";
+import { uploadToS3 } from "../../utils/aws";
+
 import { AWS_S3_ENABLED } from "../../config/config";
 
 const storeScriptLocal = async (params) => {
@@ -50,6 +52,7 @@ const storeScriptAws = async (params) => {
   }
 };
 
+// add script to aws or local
 export const addScriptSource = async (body) => {
   try {
     if (!AWS_S3_ENABLED) {
