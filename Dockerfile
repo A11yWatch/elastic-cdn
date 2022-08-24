@@ -30,18 +30,14 @@ COPY . .
 
 RUN npm run build
 
-FROM node:17.8-alpine3.14 AS installer
+FROM node:18.7-buster-slim AS installer
 
 WORKDIR /usr/src/app
-
-RUN apk upgrade --update-cache --available && \
-	apk add openssl python3 make g++ && \
-	rm -rf /var/cache/apk/*
 
 COPY package*.json ./
 RUN npm install --production
 
-FROM node:17-buster-slim
+FROM node:18.7-buster-slim
 
 WORKDIR /usr/src/app
 

@@ -1,6 +1,6 @@
 {
   "name": "@a11ywatch/elastic-cdn",
-  "version": "0.4.4",
+  "version": "0.4.7",
   "description": "cdn server for a11ywatch needs",
   "main": "./server.js",
   "author": "Jeffrey Mendez",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@a11ywatch/protos": "^0.3.1",
-    "@grpc/grpc-js": "1.6.7",
-    "@grpc/proto-loader": "0.6.13",
+    "@grpc/grpc-js": "1.6.10",
+    "@grpc/proto-loader": "0.7.2",
     "@swc/core": "^1.2.239",
     "aws-sdk": "^2.666.0"
   },
