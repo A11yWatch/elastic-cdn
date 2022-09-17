@@ -18,6 +18,8 @@ export const createServer = async () => {
   });
   server.addService(websiteProto.Cdn.service, {
     addScript: (call, callback) => {
+      console.log(call.request);
+
       setImmediate(async () => {
         await addScriptSource(call.request);
       });
@@ -26,7 +28,7 @@ export const createServer = async () => {
   });
   server.bindAsync(GRPC_HOST, ServerCredentials.createInsecure(), () => {
     server.start();
-    console.log(`gRPC server running at http://0.0.0.0:${GRPC_PORT}`);
+    console.log(`gRPC server running at http://127.0.0.1:${GRPC_PORT}`);
   });
 };
 

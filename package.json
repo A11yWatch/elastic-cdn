@@ -1,21 +1,21 @@
 {
   "name": "@a11ywatch/elastic-cdn",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "cdn server for a11ywatch needs",
   "main": "./server.js",
-  "author": "Jeffrey Mendez",
+  "author": "Jeffrey Mendez <jeff@a11ywatch.com>",
   "scripts": {
     "test": "jest",
-    "build": "tsc && tsc-alias",
+    "build": "tsc",
     "dev": "ts-node-dev --transpile-only src/server.ts",
     "start": "NODE_ENV=production node dist/server.js",
-    "pub": "tsc && tsc-alias && cp package.json dist && cp package-lock.json dist && cp README.md dist && cp LICENSE dist && cd dist && npm publish"
+    "pub": "tsc && cp package.json dist && cp package-lock.json dist && cp README.md dist && cp LICENSE dist && cd dist && npm publish"
   },
   "dependencies": {
-    "@a11ywatch/protos": "^0.3.1",
+    "@a11ywatch/protos": "^0.3.3",
     "@grpc/grpc-js": "1.6.12",
     "@grpc/proto-loader": "0.7.2",
-    "@swc/core": "^1.2.239",
+    "@swc/core": "^1.3.1",
     "aws-sdk": "^2.666.0"
   },
   "license": "MIT",
@@ -27,7 +27,6 @@
     "prettier": "^2.0.5",
     "supertest": "^5.0.0",
     "ts-node-dev": "^1.1.6",
-    "tsc-alias": "1.6.3",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.7.0"
   },

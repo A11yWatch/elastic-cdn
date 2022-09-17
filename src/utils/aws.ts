@@ -18,31 +18,26 @@ export function uploadToS3(
   if (!AWS_S3_ENABLED) {
     return;
   }
-
-  try {
-    return new Promise((resolve, reject) => {
-      if (s3bucket) {
-        s3bucket.upload(
-          {
-            Bucket: BUCKET_NAME,
-            Key,
-            Body,
-            ACL: "public-read",
-            ContentType,
-            ContentDisposition:
-              ContentType === "text/javascript" ? "inline" : undefined,
-          },
-          (err, data) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(data);
-            }
+  return new Promise((resolve, reject) => {
+    if (s3bucket) {
+      s3bucket.upload(
+        {
+          Bucket: BUCKET_NAME,
+          Key,
+          Body,
+          ACL: "public-read",
+          ContentType,
+          ContentDisposition:
+            ContentType === "text/javascript" ? "inline" : undefined,
+        },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
           }
-        );
-      }
-    });
-  } catch (e) {
-    console.error(e);
-  }
+        }
+      );
+    }
+  });
 }

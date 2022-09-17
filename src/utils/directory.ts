@@ -16,6 +16,7 @@ export function ensureDirectoryExistence(filePath: string) {
   }
 }
 
+//todo: refactor
 export function directoryExist(cdnFileName: string) {
   const existDir = ensureDirectoryExistence(cdnFileName);
 

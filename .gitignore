@@ -1,9 +1,7 @@
 node_modules
 dist
 coverage
-/src/cdn/
-/src/scripts/
-/src/screenshots/
 etc
 .DS_Store
 target
+scripts
