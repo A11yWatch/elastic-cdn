@@ -18,8 +18,6 @@ export const createServer = async () => {
   });
   server.addService(websiteProto.Cdn.service, {
     addScript: (call, callback) => {
-      console.log(call.request);
-
       setImmediate(async () => {
         await addScriptSource(call.request);
       });

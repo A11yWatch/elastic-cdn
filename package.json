@@ -1,6 +1,6 @@
 {
   "name": "@a11ywatch/elastic-cdn",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "cdn server for a11ywatch needs",
   "main": "./server.js",
   "author": "Jeffrey Mendez <jeff@a11ywatch.com>",

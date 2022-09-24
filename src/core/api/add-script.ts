@@ -70,6 +70,6 @@ export const addScriptSource = async (body) => {
       await storeScriptAws(body);
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
