@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:alpine3.15 AS rustbuilder
+FROM rust:1.65.0-alpine3.16 AS rustbuilder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY . .
 
 RUN cargo install --no-default-features --path .
 
-FROM --platform=$BUILDPLATFORM node:17.8-alpine3.14 AS builder
+FROM node:19.0-alpine3.16 AS builder
 
 WORKDIR /usr/src/app
 
@@ -29,14 +29,14 @@ COPY . .
 
 RUN npm run build
 
-FROM node:18.10-alpine AS installer
+FROM node:19.0-alpine3.16 AS installer
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install --production
 
-FROM node:18.10-alpine
+FROM node:19.0-alpine3.16
 
 WORKDIR /usr/src/app
 
