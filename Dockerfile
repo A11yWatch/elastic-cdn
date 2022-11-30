@@ -13,7 +13,7 @@ COPY . .
 
 RUN cargo install --no-default-features --path .
 
-FROM node:19.0-alpine3.16 AS builder
+FROM node:19.2-alpine3.16 AS builder
 
 WORKDIR /usr/src/app
 
@@ -29,14 +29,14 @@ COPY . .
 
 RUN npm run build
 
-FROM node:19.0-alpine3.16 AS installer
+FROM node:19.2-alpine3.16 AS installer
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install --production
 
-FROM node:19.0-alpine3.16
+FROM node:19.2-alpine3.16
 
 WORKDIR /usr/src/app
 

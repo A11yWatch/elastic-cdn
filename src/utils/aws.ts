@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk";
-import { BUCKET_NAME, AWS_S3_ENABLED } from "../config/config";
+import { BUCKET_NAME } from "../config/config";
 
 let s3bucket: S3;
 
@@ -15,29 +15,27 @@ export function uploadToS3(
   Key: string,
   ContentType?: string
 ) {
-  if (!AWS_S3_ENABLED) {
-    return;
-  }
   return new Promise((resolve, reject) => {
-    if (s3bucket) {
-      s3bucket.upload(
-        {
-          Bucket: BUCKET_NAME,
-          Key,
-          Body,
-          ACL: "public-read",
-          ContentType,
-          ContentDisposition:
-            ContentType === "text/javascript" ? "inline" : undefined,
-        },
-        (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
-        }
-      );
+    if(!s3bucket) {
+      return resolve(null);
     }
+    s3bucket.upload(
+      {
+        Bucket: BUCKET_NAME,
+        Key,
+        Body,
+        ACL: "public-read",
+        ContentType,
+        ContentDisposition:
+          ContentType === "text/javascript" ? "inline" : undefined,
+      },
+      (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      }
+    );
   });
 }

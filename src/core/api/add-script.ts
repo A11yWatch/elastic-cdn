@@ -48,16 +48,15 @@ const storeScriptAws = async (params) => {
   if (cdnSourceStripped && scriptBuffer) {
     const awsPath = buildPath([domain, cdnSourceStripped]);
 
-    const newScriptBuffer = Buffer.from(scriptBuffer);
-
-    // MOVE MINIFY TO QUEUE
     const output = await minify(scriptBuffer, { mangle: false });
     const { code } = output;
 
     const minBuffer = Buffer.from(code);
 
-    await uploadToS3(newScriptBuffer, `${awsPath}.js`, "text/javascript");
-    await uploadToS3(minBuffer, `${awsPath}.min.js`, "text/javascript");
+    await Promise.all([ 
+      uploadToS3(Buffer.from(scriptBuffer), `${awsPath}.js`, "text/javascript"),
+      uploadToS3(minBuffer, `${awsPath}.min.js`, "text/javascript")
+    ]);
   }
 };
 
