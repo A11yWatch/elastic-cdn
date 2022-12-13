@@ -2,6 +2,7 @@ import { Server, ServerCredentials } from "@grpc/grpc-js";
 import { GRPC_PORT, GRPC_HOST } from "../config/rpc";
 import { getProto } from "./website";
 import { addScriptSource } from "../core/api/add-script";
+import { removeScriptSource } from "../core/api/remove-script";
 
 let server: Server; // gRPC server
 
@@ -20,6 +21,12 @@ export const createServer = async () => {
     addScript: (call, callback) => {
       setImmediate(async () => {
         await addScriptSource(call.request);
+      });
+      callback(null, {});
+    },
+    removeScript: (call, callback) => {
+      setImmediate(async () => {
+        await removeScriptSource(call.request);
       });
       callback(null, {});
     },

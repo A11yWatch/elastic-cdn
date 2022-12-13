@@ -16,7 +16,7 @@ export function uploadToS3(
   ContentType?: string
 ) {
   return new Promise((resolve, reject) => {
-    if(!s3bucket) {
+    if (!s3bucket) {
       return resolve(null);
     }
     s3bucket.upload(
@@ -38,4 +38,33 @@ export function uploadToS3(
       }
     );
   });
+}
+
+// clear s3 folder contents
+export async function emptyS3Directory(prefix: string) {
+  const listedObjects = await s3bucket
+    .listObjectsV2({
+      Bucket: BUCKET_NAME,
+      Prefix: prefix,
+    })
+    .promise();
+
+  if (listedObjects.Contents.length === 0) {
+    return;
+  }
+
+  const deleteParams = {
+    Bucket: BUCKET_NAME,
+    Delete: { Objects: [] as any[] },
+  };
+
+  listedObjects.Contents.forEach((content) => {
+    deleteParams.Delete.Objects.push({ Key: content.Key });
+  });
+
+  await s3bucket.deleteObjects(deleteParams).promise();
+
+  if (listedObjects.IsTruncated) {
+    await emptyS3Directory(prefix);
+  }
 }

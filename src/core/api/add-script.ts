@@ -53,9 +53,9 @@ const storeScriptAws = async (params) => {
 
     const minBuffer = Buffer.from(code);
 
-    await Promise.all([ 
+    await Promise.all([
       uploadToS3(Buffer.from(scriptBuffer), `${awsPath}.js`, "text/javascript"),
-      uploadToS3(minBuffer, `${awsPath}.min.js`, "text/javascript")
+      uploadToS3(minBuffer, `${awsPath}.min.js`, "text/javascript"),
     ]);
   }
 };
