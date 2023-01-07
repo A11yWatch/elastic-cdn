@@ -24,7 +24,7 @@ export interface Service {
 export const getProto = async (
   target = "/cdn.proto"
 ): Promise<Service & GRPC> => {
-  const packageDef = await load(`node_modules/@a11ywatch/protos${target}`, {
+  const packageDef = await load(`./node_modules/@a11ywatch/protos${target}`, {
     keepCase: true,
     longs: String,
     enums: String,
